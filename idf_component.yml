@@ -1,0 +1,10 @@
+name: esp-swift-i2c
+version: "0.1.0"
+description: "ESP-IDF I2C master driver for Swift"
+url: "https://github.com/nixit22/esp-swift-i2c"
+dependencies:
+  idf: ">=5.5"
+  esp-swift-platform:
+    git: "https://github.com/nixit22/esp-swift-platform.git"
+  esp-swift-support:
+    git: "https://github.com/nixit22/esp-swift-support.git"
