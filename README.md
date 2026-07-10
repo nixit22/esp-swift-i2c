@@ -1,53 +1,25 @@
 # SwiftI2C
 
-SwiftI2C wraps the ESP-IDF I2C master driver in Embedded Swift. It provides a
-type-safe, Swifty interface for configuring an I2C master bus and communicating
-with attached devices.
+Swift I2C master driver wrapping ESP-IDF's `esp_driver_i2c`. Exposes `I2CMasterBus` and `I2CMasterBus.Device` for configuring a bus and transmitting/receiving with attached devices. Swift module name: **`I2C`**.
 
-## Features
+Depends on: `SwiftPlatform`, `SwiftSupport`, `esp_driver_i2c`.
 
-- Create and delete an I2C master bus (`I2CMasterBus`).
-- Add and remove devices by 7-bit or 10-bit address.
-- Transmit bytes to a device.
-- Receive bytes from a device.
-- Combined write-then-read in a single transaction.
-
-## API
-
-All APIs surface ESP-IDF errors as Swift typed throws (`throws(Error)`).
-
-### `I2CMasterBus`
+## Usage
 
 ```swift
-let bus = I2CMasterBus(
-    i2cPort: I2C_NUM_0,
-    sdaIoNum: GPIO_NUM_6,
-    sclIoNum: GPIO_NUM_7)
+import I2C
+
+let bus = I2CMasterBus(i2cPort: I2C_NUM_0, sdaIoNum: GPIO_NUM_6, sclIoNum: GPIO_NUM_7)
+let device = try bus.addDevice(deviceAddress: 0x48)
+
+try device.transmit(data: [0x01, 0x02])
+let bytes = try device.receive(length: 4)
+let response = try device.transmitReceive(transmitData: [0xAB], receiveLength: 2)
+// No explicit cleanup — deinit handles it.
+// Declare bus before device so Swift destroys them in reverse order (device first) — required IDF order.
 ```
 
-`init` parameters and their defaults:
-
-| Parameter | Default | Notes |
-|---|---|---|
-| `i2cPort` | — | Required |
-| `sdaIoNum` | — | Required |
-| `sclIoNum` | — | Required |
-| `clkConfig` | `I2C_CLK_SRC_DEFAULT` | |
-| `glitchIgnoreCnt` | `7` | |
-| `intrPriority` | `0` | |
-| `transQueueDepth` | `0` | |
-| `enableInternalPullup` | `true` | |
-| `allowPd` | `false` | |
-
-### `I2CMasterBus.Device`
-
-Obtained via `bus.addDevice(deviceAddress:sclSpeedHz:devAddrLength:sclWaitUs:disableAckCheck:)`.
-
-- `transmit(data: [UInt8], timeoutMs: Int32 = -1)`
-- `receive(length: Int, timeoutMs: Int32 = -1) -> [UInt8]`
-- `transmitReceive(transmitData: [UInt8], receiveLength: Int, timeoutMs: Int32 = -1) -> [UInt8]`
-
-`Device` (and `I2CMasterBus`) are `~Copyable` — no explicit `remove()`/`close()` call is needed; the underlying handle is released automatically in `deinit`.
+See [`CLAUDE.md`](CLAUDE.md) for full API details and non-obvious patterns.
 
 ## License
 
