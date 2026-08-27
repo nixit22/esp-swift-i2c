@@ -73,14 +73,14 @@ public struct I2CMasterBus: ~Copyable {
     /// Add a device to the I2C bus.
     ///
     /// - Returns: A `Device` representing the added device.
-    /// - Throws: `Error` on failure.
+    /// - Throws: `PlatformError` on failure.
     public func addDevice(
         deviceAddress: UInt16,
         sclSpeedHz: UInt32 = 100_000,
         devAddrLength: i2c_addr_bit_len_t = I2C_ADDR_BIT_LEN_7,
         sclWaitUs: UInt32 = 0,
         disableAckCheck: Bool = false
-    ) throws(Error) -> Device {
+    ) throws(PlatformError) -> Device {
         var deviceConfig = i2c_device_config_t(
             dev_addr_length: devAddrLength,
             device_address: deviceAddress,
@@ -95,7 +95,7 @@ public struct I2CMasterBus: ~Copyable {
             }
         guard let deviceHandle else {
             log.e("Failed to create I2C device: device handle is nil")
-            throw Error.espError(ESP_FAIL)
+            throw PlatformError.espError(ESP_FAIL)
         }
         return Device(deviceHandle: deviceHandle)
     }
@@ -119,8 +119,8 @@ public struct I2CMasterBus: ~Copyable {
         /// - Parameters:
         ///   - data: Bytes to send.
         ///   - timeoutMs: Timeout in milliseconds; `-1` means wait forever.
-        /// - Throws: `Error` on failure.
-        public func transmit(data: [UInt8], timeoutMs: Int32 = -1) throws(Error) {
+        /// - Throws: `PlatformError` on failure.
+        public func transmit(data: [UInt8], timeoutMs: Int32 = -1) throws(PlatformError) {
             try data.withUnsafeBufferPointer { buffer in
                 i2c_master_transmit(deviceHandle, buffer.baseAddress, data.count, timeoutMs)
             }
@@ -135,8 +135,8 @@ public struct I2CMasterBus: ~Copyable {
         ///   - length: Number of bytes to read.
         ///   - timeoutMs: Timeout in milliseconds; `-1` means wait forever.
         /// - Returns: Received bytes.
-        /// - Throws: `Error` on failure.
-        public func receive(length: Int, timeoutMs: Int32 = -1) throws(Error) -> [UInt8] {
+        /// - Throws: `PlatformError` on failure.
+        public func receive(length: Int, timeoutMs: Int32 = -1) throws(PlatformError) -> [UInt8] {
             var result: esp_err_t = ESP_OK
             let buffer = [UInt8](unsafeUninitializedCapacity: length) { ptr, initializedCount in
                 result = i2c_master_receive(deviceHandle, ptr.baseAddress, size_t(length), timeoutMs)
@@ -155,12 +155,12 @@ public struct I2CMasterBus: ~Copyable {
         ///   - receiveLength: Number of bytes to read after write.
         ///   - timeoutMs: Timeout in milliseconds; `-1` means wait forever.
         /// - Returns: Received bytes.
-        /// - Throws: `Error` on failure.
+        /// - Throws: `PlatformError` on failure.
         public func transmitReceive(
             transmitData: [UInt8],
             receiveLength: Int,
             timeoutMs: Int32 = -1
-        ) throws(Error) -> [UInt8] {
+        ) throws(PlatformError) -> [UInt8] {
             var result: esp_err_t = ESP_OK
             let receiveBuffer = [UInt8](unsafeUninitializedCapacity: receiveLength) { rxPtr, initializedCount in
                 result = transmitData.withUnsafeBufferPointer { txPtr in
