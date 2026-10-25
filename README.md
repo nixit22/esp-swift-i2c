@@ -12,7 +12,7 @@ app's `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/nixit22/esp-swift-i2c.git", branch: "SPM"),
+    .package(url: "https://github.com/nixit22/esp-swift-i2c.git", from: "0.1.0"),
 ],
 targets: [
     .target(name: "App", dependencies: [.product(name: "I2C", package: "esp-swift-i2c")]),
