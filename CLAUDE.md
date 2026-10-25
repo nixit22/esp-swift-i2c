@@ -8,9 +8,9 @@ Depends on: `SwiftPlatform`, `SwiftSupport`, `esp_driver_i2c`
 
 | File | Role |
 |---|---|
-| `src/I2CMaster.swift` | `I2CMasterBus` and `I2CMasterBus.Device` — public Swift API |
-| `src/i2c.c` / `src/i2c.h` | Thin C wrapper — only `#include <driver/i2c_master.h>` |
-| `module.modulemap` | Clang module `ESP_I2C` — umbrella over `src/i2c.h` |
+| `Sources/I2C/I2CMaster.swift` | `I2CMasterBus` and `I2CMasterBus.Device` — public Swift API |
+| `Sources/ESP_I2C/i2c.c` / `Sources/ESP_I2C/include/ESP_I2C.h` | Thin C wrapper — only `#include <driver/i2c_master.h>` |
+| `Package.swift` | SwiftPM package: C target `ESP_I2C` (module map generated from `include/ESP_I2C.h`, the former `ESP_I2C.h`) and Swift target `I2C` |
 
 ## Public API
 
@@ -38,4 +38,4 @@ let response = try device.transmitReceive(transmitData: [0xAB], receiveLength: 2
 
 **`timeoutMs: -1`** — the default for all transfer methods, meaning "wait forever". This value is passed directly to the ESP-IDF API; do not confuse with `nil` / `portMAX_DELAY`.
 
-**No custom C glue** — unlike SwiftGPIO, `i2c.c` contains no runtime logic. It exists solely so the component has a C compilation unit (required by ESP-IDF component registration).
+**No custom C glue** — unlike SwiftGPIO, `i2c.c` contains no runtime logic. It exists solely so the component has a C compilation unit (required by SwiftPM).

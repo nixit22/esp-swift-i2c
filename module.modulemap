@@ -1,4 +1,0 @@
-module ESP_I2C [system] {
-    umbrella header "src/i2c.h"
-    export *
-}

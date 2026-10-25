@@ -20,4 +20,4 @@
  * SOFTWARE.
  */
 
-#include "i2c.h"
+#include "ESP_I2C.h"

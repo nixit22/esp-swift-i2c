@@ -4,6 +4,24 @@ Swift I2C master driver wrapping ESP-IDF's `esp_driver_i2c`. Exposes `I2CMasterB
 
 Depends on: `SwiftPlatform`, `SwiftSupport`, `esp_driver_i2c`.
 
+## Adding it to a project
+
+This is a [SwiftPM](https://www.swift.org/package-manager/) package, built for ESP-IDF by
+`swift_package()` from [esp-swift-support](https://github.com/nixit22/esp-swift-support). In your
+app's `Package.swift`:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/nixit22/esp-swift-i2c.git", branch: "SPM"),
+],
+targets: [
+    .target(name: "App", dependencies: [.product(name: "I2C", package: "esp-swift-i2c")]),
+]
+```
+
+See esp-swift-support's README for the project setup (top-level `CMakeLists.txt`, `main`
+component, Swift toolchain).
+
 ## Usage
 
 ```swift
