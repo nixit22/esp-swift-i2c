@@ -30,8 +30,8 @@ let package = Package(
         .library(name: "I2C", targets: ["I2C"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/nixit22/esp-swift-support.git", from: "0.2.1"),
-        .package(url: "https://github.com/nixit22/esp-swift-platform.git", from: "0.1.0"),
+        .package(url: "https://github.com/nixit22/esp-swift-support.git", from: "0.3.0"),
+        .package(url: "https://github.com/nixit22/esp-swift-platform.git", from: "0.2.0"),
     ],
     targets: [
         // include/ESP_I2C.h is the umbrella header: SwiftPM generates the module map.
